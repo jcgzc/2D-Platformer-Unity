@@ -42,9 +42,10 @@ public class PlayerController : MonoBehaviour
     private float nextFireTime = 0f; // Time of the next allowed shot
 
 
-    
 
 
+
+    public bool canMove = true;
 
 
     private void Start()
@@ -57,6 +58,9 @@ public class PlayerController : MonoBehaviour
             UIManager.instance.EnableMobileControls();
         }
 
+        this.enabled = true;
+        gameObject.SetActive(true);
+
 
     }
 
@@ -64,29 +68,37 @@ public class PlayerController : MonoBehaviour
     {
         isGroundedBool = IsGrounded();
 
-        if (isGroundedBool)
+        if (canMove)
         {
-            canDoubleJump = true; // Reset double jump when grounded
-
-            if (controlmode == Controls.pc)
+            if (isGroundedBool)
             {
-                moveX = Input.GetAxis("Horizontal");
+                canDoubleJump = true; // Reset double jump when grounded
+
+                if (controlmode == Controls.pc)
+                {
+                    moveX = Input.GetAxis("Horizontal");
+                }
+
+                if (Input.GetButtonDown("Jump"))
+                {
+                    Jump(jumpForce);
+                }
             }
-
-
-            if (Input.GetButtonDown("Jump"))
+            else
             {
-                Jump(jumpForce);
+                if (canDoubleJump && Input.GetButtonDown("Jump"))
+                {
+                    Jump(doubleJumpForce);
+                    canDoubleJump = false; // Disable double jump until grounded again
+                }
             }
         }
         else
         {
-            if (canDoubleJump && Input.GetButtonDown("Jump"))
-            {
-                Jump(doubleJumpForce);
-                canDoubleJump = false; // Disable double jump until grounded again
-            }
+            // Prevent horizontal movement if can't move
+            moveX = 0;
         }
+
 
         if (!isPaused)
         {
@@ -157,16 +169,17 @@ public class PlayerController : MonoBehaviour
     }
     private void FixedUpdate()
     {
-        // Player movement
         if (controlmode == Controls.pc)
         {
-            moveX = Input.GetAxis("Horizontal");
+            if (!canMove)
+                moveX = 0;
+            else
+                moveX = Input.GetAxis("Horizontal");
         }
-       
-
 
         rb.velocity = new Vector2(moveX * moveSpeed, rb.velocity.y);
     }
+
 
     private void Jump(float jumpForce)
     {

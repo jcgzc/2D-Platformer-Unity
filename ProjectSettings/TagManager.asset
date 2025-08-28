@@ -6,6 +6,9 @@ TagManager:
   tags:
   - killzone
   - Coin
+  - Enemy
+  - HealthPickup
+  - Damage
   layers:
   - Default
   - TransparentFX
@@ -63,4 +66,7 @@ TagManager:
     locked: 0
   - name: Player
     uniqueID: 3775889879
+    locked: 0
+  - name: Monster
+    uniqueID: 2187772705
     locked: 0
