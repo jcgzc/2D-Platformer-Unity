@@ -624,11 +624,7 @@ MonoBehaviour:
   coinPickupTextPrefab: {fileID: 0}
   coinPickupSpawnPoint: {fileID: 0}
   coinTextDuration: 1.5
-  enemyPrefab: {fileID: 6177031924754797476, guid: 63df1ed04444bb244b5ce386062c3ed3, type: 3}
-  spawnPoints:
-  - {fileID: 507959782}
-  - {fileID: 264868807}
-  - {fileID: 1484222241}
+  currentNPC: {fileID: 0}
 --- !u!1 &264537664
 GameObject:
   m_ObjectHideFlags: 0
@@ -7318,6 +7314,8 @@ MonoBehaviour:
   mathQuestionPanel: {fileID: 107128180}
   coinPrefab: {fileID: 3658722155380845051, guid: 35f409698c2eb804292697d65adef0d0, type: 3}
   spawnHeight: 1.5
+  enemyPrefab: {fileID: 0}
+  spawnRadius: 2
   feedbackText: {fileID: 370191550}
   feedbackDuration: 2
 --- !u!1 &495593064
@@ -16596,18 +16594,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveSpeed: 8
   jumpForce: 60
-  doubleJumpForce: 40
+  glideFallSpeed: -5
+  dashSpeed: 20
+  dashDuration: 0.5
+  groundCheck: {fileID: 905832154}
+  groundCheckRadius: 0.2
   groundLayer:
     serializedVersion: 2
     m_Bits: 1
-  groundCheck: {fileID: 905832154}
   playeranim: {fileID: 1633012783}
-  controlmode: 1
-  isPaused: 0
   footsteps: {fileID: 966785389}
-  ImpactEffect: {fileID: 371739267}
-  fireRate: 0.5
-  canMove: 1
+  controlmode: 1
 --- !u!4 &1387155446
 Transform:
   m_ObjectHideFlags: 0
@@ -16818,7 +16815,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1401656269}
   - component: {fileID: 1401656268}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Grid
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -23914,7 +23911,7 @@ Transform:
   m_GameObject: {fileID: 1758547224}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -6.736509, y: -0.19941998, z: -10}
+  m_LocalPosition: {x: -6.7254105, y: -0.19947004, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -24507,7 +24504,7 @@ GameObject:
   - component: {fileID: 1953142425}
   - component: {fileID: 1953142427}
   - component: {fileID: 1953142426}
-  m_Layer: 0
+  m_Layer: 4
   m_Name: BackGroundTileMap
   m_TagString: Untagged
   m_Icon: {fileID: 0}

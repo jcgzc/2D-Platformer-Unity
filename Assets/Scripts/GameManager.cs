@@ -7,6 +7,12 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager instance;
 
+    [Header("Math Level Settings")]
+    public int mathLevel = 1;               // Startnivå
+    public int mathQuestionsCorrect = 0;    // Räknar antal rätt
+    public int mathQuestionsToLevelUp = 5;  // Rätt svar för att gå upp i nivå
+    public int mathMaxLevel = 5;            // Maxnivå
+
 
     [SerializeField] private TMP_Text coinText;
 
@@ -160,18 +166,25 @@ public class GameManager : MonoBehaviour
 
     public void LevelComplete()
     {
-
         isTimerRunning = false;
 
         levelCompletePanel.SetActive(true);
         leveCompletePanelTitle.text = "LEVEL COMPLETE";
 
+        levelCompleteCoins.text = "COINS COLLECTED: " + coinCount.ToString() + " / " + totalCoins.ToString();
 
-
-        levelCompleteCoins.text = "COINS COLLECTED: "+ coinCount.ToString() +" / " + totalCoins.ToString();
- 
+        // Starta coroutine för att byta scen efter en liten delay
+        StartCoroutine(LoadNextLevel());
     }
-   
+
+    private IEnumerator LoadNextLevel()
+    {
+        yield return new WaitForSeconds(2f); // tid att se panelen
+        int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
+        SceneManager.LoadScene(currentSceneIndex + 1);
+    }
+
+
     public IEnumerator DeathCoroutine()
     {
         yield return new WaitForSeconds(1f);
@@ -188,5 +201,22 @@ public class GameManager : MonoBehaviour
             
         }
     }
+
+    public void MathQuestionAnswered(bool isCorrect)
+    {
+        if (!isCorrect) return;
+
+        mathQuestionsCorrect++;
+
+        if (mathQuestionsCorrect >= mathQuestionsToLevelUp && mathLevel < mathMaxLevel)
+        {
+            mathLevel++;
+            mathQuestionsCorrect = 0;
+            Debug.Log($"Grattis! Du har nått Math Level {mathLevel}!");
+            // Här kan du t.ex. visa ett UI-feedback på skärmen
+        }
+    }
+
+
 
 }

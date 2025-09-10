@@ -76,13 +76,14 @@ public class NPCMathTrigger : MonoBehaviour
         }
     }
 
-    private void GiveReward()
+    protected virtual void GiveReward()
     {
         if (coinPrefab == null) return;
 
         Vector3 spawnPos = transform.position + new Vector3(0f, spawnHeight, 0f);
         Instantiate(coinPrefab, spawnPos, Quaternion.identity);
     }
+
 
     public void SpawnEnemy()
     {

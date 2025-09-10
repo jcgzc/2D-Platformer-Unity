@@ -1,4 +1,4 @@
-
+﻿
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -11,7 +11,7 @@ public class PlayerController : MonoBehaviour
 
 
     public float moveSpeed = 5f;
-    public float jumpForce = 10f;
+    public float jumpForce = 15f; //before 10f
     public float doubleJumpForce = 8f;
     public LayerMask groundLayer;
     public Transform groundCheck;

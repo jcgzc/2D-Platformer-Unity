@@ -7,6 +7,21 @@ using System.Collections.Generic;
 
 public class MathQuestion : MonoBehaviour
 {
+    public enum Operation
+    {
+        Addition,
+        Subtraction,
+        Multiplication,
+        Division
+    }
+
+    [Header("Level Settings")]
+    //[Range(1, 5)]
+    //public int currentLevel = 1;  // 1–5 nivåer
+    public int questionsCorrect = 0; // Räknar antal rätt
+    public int questionsToLevelUp = 5; // Antal rätt för att gå till nästa nivå
+    public int maxLevel = 5;         // Maxnivå
+
     [Header("Panel & UI")]
     public GameObject panel;
     public TMP_Text questionText;
@@ -40,11 +55,58 @@ public class MathQuestion : MonoBehaviour
         }
     }
 
+    // Välj operation baserat på level
+    private Operation GetOperationForLevel(int level)
+    {
+        switch (level)
+        {
+            case 1: return Operation.Addition;
+            case 2: return Operation.Subtraction;
+            case 3: return Operation.Multiplication;
+            case 4: return Operation.Division;
+            case 5:
+                // slumpa mellan alla 4 operationer
+                int randomOp = UnityEngine.Random.Range(0, 4); // 0–3
+                return (Operation)randomOp;
+            default:
+                return Operation.Addition;
+        }
+    }
+
     public void AskQuestion(int a, int b, Action<bool> callback)
     {
         this.callback = callback;
-        correctAnswer = a + b;
-        questionText.text = $"Vad är {a} + {b}?";
+
+        Operation operation = GetOperationForLevel(GameManager.instance.mathLevel);
+
+
+        switch (operation)
+        {
+            case Operation.Addition:
+                correctAnswer = a + b;
+                questionText.text = $"Vad är {a} + {b}?";
+                break;
+
+            case Operation.Subtraction:
+                if (b > a) (a, b) = (b, a); // undvik negativa
+                correctAnswer = a - b;
+                questionText.text = $"Vad är {a} - {b}?";
+                break;
+
+            case Operation.Multiplication:
+                correctAnswer = a * b;
+                questionText.text = $"Vad är {a} × {b}?";
+                break;
+
+            case Operation.Division:
+                // gör division jämn
+                int result = UnityEngine.Random.Range(2, 10);
+                correctAnswer = result;
+                b = UnityEngine.Random.Range(2, 10);
+                a = correctAnswer * b;
+                questionText.text = $"Vad är {a} ÷ {b}?";
+                break;
+        }
 
         // Slumpa svarsalternativ
         HashSet<int> answers = new HashSet<int> { correctAnswer };
@@ -73,6 +135,7 @@ public class MathQuestion : MonoBehaviour
         {
             playerCoins += 1;
             ShowFeedback("Rätt svar!");
+            GameManager.instance.MathQuestionAnswered(true);
 
             if (coinPickupTextPrefab != null && coinPickupSpawnPoint != null)
             {
@@ -84,14 +147,13 @@ public class MathQuestion : MonoBehaviour
         else
         {
             ShowFeedback("Fel svar!");
-
-            // Spawn EN fiende vid aktuell NPC
             currentNPC?.SpawnEnemy();
         }
 
         panel.SetActive(false);
         callback?.Invoke(isCorrect);
     }
+
 
     private void ShowFeedback(string message)
     {
@@ -103,6 +165,8 @@ public class MathQuestion : MonoBehaviour
         CancelInvoke(nameof(HideFeedback));
         Invoke(nameof(HideFeedback), feedbackDuration);
     }
+
+
 
     private void HideFeedback()
     {
